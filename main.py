@@ -3,6 +3,7 @@ from fastapi import *
 from fastapi.responses import *
 from sqlalchemy.orm import *
 from sqlalchemy import *
+from os import *
 
 #importing local classes
 from database import *
@@ -21,11 +22,15 @@ def get(request:Request, Id = 0, name="null", customer = "null"):
     if Id:
         data = db.get(Product, Id)
         if data:
-            return JSONResponse(data, status_code=200)
+            return JSONResponse({"id":data.id, "name":data.name, "price":data.price, "customer":data.customer}, status_code=200)
         else:
             return JSONResponse(["Not Found"], status_code=404)
     else:
         data = db.get(Product, id=Id, name=name, customer = customer)
+        # Преобразование в словарь
+        data = data.__dict__
+        # Удаление атрибута '_sa_instance_state'
+        data.pop('_sa_instance_state', None)
         if data:
             return JSONResponse(data, status_code=200)
         else:
@@ -34,14 +39,12 @@ def get(request:Request, Id = 0, name="null", customer = "null"):
 
 @app.post("/create")
 async def create(request:Request):
-    try:
-        data = await request.json()
-        NewProduct = Product(id=data["id"], name=data["name"], customer=["customer"], price = data["price"])
-        db.add(NewProduct)
-        db.commit()
-        return JSONResponse(["Created"], status_code=201)
-    except Exception as e:
-        return JSONResponse([str(e)], status_code=500)
+    data = await request.json()
+    NewProduct = Product(id=data["id"], name=data["name"], customer=data["customer"], price = data["price"])
+    db.add(NewProduct)
+    db.commit()
+    return JSONResponse(["Created"], status_code=201)
+
     
 
 @app.post("/update")
@@ -61,16 +64,18 @@ async def update(request:Request):
         return JSONResponse([str(e)], status_code=500)
     
 
-@app.delete("/delete")
-async def dlt(request:Request):
-    try:
-        data = await request.data()
-        product = db.query(Product).filter(Product.id == data["id"]).first()
-        if product:
-            db.delete(product)
-            db.commit()
-            return JSONResponse(["deleted"], status_code= 200)
-        else:
-            return JSONResponse(["Not Found"], status_code=404)
-    except Exception as e:
-        return JSONResponse([str(e)], status_code=500)
+@app.post("/delete")
+async def delete_product(request: Request,):
+    data = await request.json()
+    product_id = data.get("id")
+
+    if product_id is None:
+        return JSONResponse({"detail": "Missing product ID"}, status_code=400)
+
+    product = db.query(Product).filter(Product.id == product_id).first()
+    if product:
+        db.delete(product)
+        db.commit()
+        return JSONResponse({"message": "deleted"}, status_code=200)
+    else:
+        return JSONResponse({"detail": "Product not found"}, status_code=404)

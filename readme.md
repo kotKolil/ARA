@@ -9,7 +9,7 @@ Via this API, you can get, create, update and delete products.
 | /get     | GET             |via this entypoint you can get data about product. You can give params in url string. If you give param id, you will get data about product with this id. If you give params name & customer, you will get list of products with this values|
 |/create |POST |Via this api you can create new product. To do it, you must send post request with json, that include fileds name, customer, id, price, to server|
 |/update| POST| Via this api you can create update info about product in DB. To do it, you must send post request with json, that include fileds name, customer, id, price, to server|
-|/update| DELETE| Via this api you can remove data about product from database. To  do it, you must send delete request with json, that include field "id"|
+|/delete| POST| Via this api you can remove data about product from database. To  do it, you must send post request with json, that include field "id"|
 
 ### Starting server
 
