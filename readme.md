@@ -16,7 +16,7 @@ Via this API, you can get, create, update and delete products.
 To start server, you need to  do this things:
 <ol>
 
-<li> clone it from github with command "git clone https://github.com/ARA"</li>
+<li> clone it from github with command "git clone https://github.com/kotKolil/ARA"</li>
 
 <li>run "cd ARA"</li>
 
@@ -34,7 +34,7 @@ if you using Docker and want to run app, you need to do this things:
 
 <ol>
 
-<li> clone it from github with command "git clone https://github.com/ARA"</li>
+<li> clone it from github with command "git clone https://github.com/kotKolil/ARA"</li>
 
 <li>run "cd ARA"</li>
 
@@ -43,5 +43,22 @@ if you using Docker and want to run app, you need to do this things:
 <li>run "docker build -t app ."</li>
 <li>run "docker run -dp 127.0.0.1:8000:8000 app"
 
+</ol>
+
+### Testing app
+
+If you want to test app, you need to do this things:
+
+<ol>
+
+<li>
+install dependencies with command "pip install -r r.txt"
+</li>
+
+<li>run app. Info about that wrote upper</li>
+
+<li>
+write in console "pytest testing.py"
+</li>
 
 </ol>

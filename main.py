@@ -36,7 +36,7 @@ def get(request:Request, Id = 0, name="null", customer = "null"):
 async def create(request:Request):
     try:
         data = await request.json()
-        NewProduct = Product(id=data["id"], name=data["name"], customer=["customer"], price = int(data["price"]))
+        NewProduct = Product(id=data["id"], name=data["name"], customer=["customer"], price = data["price"])
         db.add(NewProduct)
         db.commit()
         return JSONResponse(["Created"], status_code=201)
