@@ -18,21 +18,21 @@ def index(request:Request):
 
 #endpoints to get information about product with search with params
 @app.get("/things")
-def get(request:Request, Id = 0, name="null", customer = "null"):
+def get(request: Request, Id: str = "", name: str = "null", customer: str = "null"):
+
     if Id:
-        data = db.get(Product, Id)
+        data = db.query(Product).filter(Product.id == Id).first()
         if data:
-            return JSONResponse({"id":data.id, "name":data.name, "price":data.price, "customer":data.customer}, status_code=200)
+            return JSONResponse({"id": data.id, "name": data.name, "price": data.price, "customer": data.customer}, status_code=200)
         else:
             return JSONResponse(["Not Found"], status_code=404)
     else:
-        data = db.get(Product, id=Id, name=name, customer = customer)
-        data = data.__dict__
-        data.pop('_sa_instance_state', None)
-        if data:
-            return JSONResponse(data, status_code=200)
-        else:
+        data = db.query(Product).filter(or_(Product.name == name, Product.customer == customer)).all()
+        if not data:
             return JSONResponse(["Not Found"], status_code=404)
+
+        ParsedData = [{"id": i.id, "name": i.name, "price": i.price, "customer": i.customer} for i in data]
+        return JSONResponse(ParsedData, status_code=200)
         
 
 @app.post("/things")
