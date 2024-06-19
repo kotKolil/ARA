@@ -17,7 +17,7 @@ def index(request:Request):
     return HTMLResponse("<H3>It works!</H3>")
 
 #endpoints to get information about product with search with params
-@app.get("/get")
+@app.get("/things")
 def get(request:Request, Id = 0, name="null", customer = "null"):
     if Id:
         data = db.get(Product, Id)
@@ -27,9 +27,7 @@ def get(request:Request, Id = 0, name="null", customer = "null"):
             return JSONResponse(["Not Found"], status_code=404)
     else:
         data = db.get(Product, id=Id, name=name, customer = customer)
-        # Преобразование в словарь
         data = data.__dict__
-        # Удаление атрибута '_sa_instance_state'
         data.pop('_sa_instance_state', None)
         if data:
             return JSONResponse(data, status_code=200)
@@ -37,7 +35,7 @@ def get(request:Request, Id = 0, name="null", customer = "null"):
             return JSONResponse(["Not Found"], status_code=404)
         
 
-@app.post("/create")
+@app.post("/things")
 async def create(request:Request):
     data = await request.json()
     NewProduct = Product(id=data["id"], name=data["name"], customer=data["customer"], price = data["price"])
@@ -47,7 +45,7 @@ async def create(request:Request):
 
     
 
-@app.post("/update")
+@app.patch("/things")
 async def update(request:Request):
     data = await request.json()
     try:
@@ -64,7 +62,7 @@ async def update(request:Request):
         return JSONResponse([str(e)], status_code=500)
     
 
-@app.post("/delete")
+@app.delete("/things")
 async def delete_product(request: Request,):
     data = await request.json()
     product_id = data.get("id")
